@@ -1,8 +1,9 @@
-import {locations,actions,fresh,duration,reason,start,advance,nextRun,ready,resolve,WAVE_TIME} from './engine.js';
+import {locations,actions,fresh,duration,reason,start,advance,nextRun,ready,resolve,WAVE_TIME,migrateSave} from './engine.js';
 import {terrain,structure} from './art.js';
 const $=id=>document.getElementById(id), KEY='rebuild-v0-save';
 let state=fresh(), selected='camp',paused=false,zoom=1,sound=false,audio=null,saveOK=true;
 try{const stored=JSON.parse(localStorage.getItem(KEY));if(stored?.version===1&&Array.isArray(stored.done)&&Array.isArray(stored.discovered)&&Number.isFinite(stored.time)&&stored.time>=0&&stored.time<=WAVE_TIME&&['scrap','food','people','defense','knowledge','run'].every(k=>Number.isFinite(stored[k])&&stored[k]>=0)&&Array.isArray(stored.known)&&Array.isArray(stored.log)&&(!stored.active||actions[stored.active.id]))state=stored;}catch{}
+state=migrateSave(state);
 // A resumed task waits for the player, rather than advancing while the page loads.
 paused=!!state.active;
 const restoredFor={camp:'shelter',farm:'cultivate',bridge:'crossing',radio:'signal',church:'rescue',ridge:'scout'};
@@ -23,7 +24,7 @@ function renderMap(){
  $('world').innerHTML=`<g id="map-content" transform="translate(${550*(1-zoom)},${380*(1-zoom)}) scale(${zoom})">${mapBase}${fog}<g id="horde-marker" aria-hidden="true"><path d="M-85 -55 Q0 -90 85 -55" fill="none" stroke="#d78068" stroke-width="3" stroke-dasharray="5 6"/><path d="M-18 -48 0 -25 18 -48" fill="none" stroke="#d78068" stroke-width="3"/><text text-anchor="middle" y="-105" fill="#f0b09a" font-size="12" font-family="monospace">☠ HORDE FRONT</text><text text-anchor="middle" y="-88" fill="#d6a08d" font-size="9" font-family="monospace">APPROACHING OUTPOST</text></g>${nodes}</g>`;
  $('world').querySelectorAll('[data-location]').forEach(el=>{const select=()=>selectLocation(el.dataset.location);el.addEventListener('click',select);el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();select();}});});
  updateHorde();
- $('explored').textContent=`${state.discovered.length} / 8 locations`;
+ $('explored').textContent=`${state.discovered.length} / ${locations.length} locations`;
 }
 function updateHorde(){
  const marker=$('horde-marker');
@@ -42,7 +43,7 @@ function renderDetail(){
  const list=Object.entries(actions).filter(([,a])=>a.node===selected);
  $('detail').innerHTML=`<div class="location-heading"><span class="tag">${loc.kind}</span><span class="location-number">LOCATION 0${locations.indexOf(loc)+1}</span></div><div class="location-art"><svg viewBox="-100 -115 200 170" aria-hidden="true"><ellipse cy="25" rx="85" ry="25" fill="#2d3b2a"/><path d="M-90 25 0-20 90 25 0 70Z" fill="#35442d" opacity=".5"/><g transform="translate(0,0) scale(1.12)">${structure(loc.icon,restored)}</g></svg></div><h2>${loc.name}</h2><p class="location-description">${restored&&loc.restored?loc.restored:loc.text}</p><div class="location-status"><i></i>${restored?'A little more life in the valley.':'Discovered · Awaiting your next move'}</div><div class="section-heading">AVAILABLE ACTIONS <span>${String(list.length).padStart(2,'0')}</span></div>${list.map(([id,a])=>{
  const done=a.once&&state.done.includes(id),blocked=reason(state,id),gain=Object.entries(a.gain||{}).map(([k,v])=>`<span>+${v*(id==='harvest'&&state.done.includes('cultivate')?2:1)} ${labels[k].toLowerCase()}</span>`).join(''),cost=Object.entries(a.cost||{}).map(([k,v])=>`<span class="cost">−${v} ${labels[k].toLowerCase()}</span>`).join('');
- return `<div class="action-card ${done?'finished':''}"><div class="action-head"><h3>${a.label}</h3><span>${duration(state,id)}h</span></div><p>${a.description}</p><div class="action-facts">${cost}${gain}${a.reveal?`<span>+${a.reveal.length} locations</span>`:''}</div>${!done&&!state.active?`<div class="time-cost ${state.time+duration(state,id)>WAVE_TIME?'danger':''}">${state.time+duration(state,id)>WAVE_TIME?'Horde arrives before completion':`${Math.floor(WAVE_TIME-state.time-duration(state,id))}h left after this action`}</div>`:''}${done?'<div class="finished-label">✓ COMPLETED</div>':`<button class="action-button" data-action="${id}" ${blocked?'disabled':''}><span>${blocked||a.label}</span><span>${blocked?'—':'↗'}</span></button>`}${!done&&a.cost?Object.entries(a.cost).filter(([k,v])=>state[k]<v).map(([k])=>`<button class="supply-link" data-supply="${k==='scrap'?'yard':state.discovered.includes('farm')?'farm':'ridge'}">${k==='scrap'?'Find scrap → Scrap yard':state.discovered.includes('farm')?'Find food → Briar farm':'Find food → Scout the ridge'}</button>`).join(''):''}</div>`;
+ return `<div class="action-card ${done?'finished':''}"><div class="action-head"><h3>${a.label}</h3><span>${duration(state,id)}h</span></div><p>${a.description}</p><div class="action-facts">${cost}${gain}${a.reveal?.some(id=>!state.discovered.includes(id))?`<span>+${a.reveal.filter(id=>!state.discovered.includes(id)).length} locations</span>`:''}</div>${!done&&!state.active?`<div class="time-cost ${state.time+duration(state,id)>WAVE_TIME?'danger':''}">${state.time+duration(state,id)>WAVE_TIME?'Horde arrives before completion':`${Math.floor(WAVE_TIME-state.time-duration(state,id))}h left after this action`}</div>`:''}${done?'<div class="finished-label">✓ COMPLETED</div>':`<button class="action-button" data-action="${id}" ${blocked?'disabled':''}><span>${blocked||a.label}</span><span>${blocked?'—':'↗'}</span></button>`}${!done&&a.cost?Object.entries(a.cost).filter(([k,v])=>state[k]<v).map(([k])=>`<button class="supply-link" data-supply="${k==='scrap'?'yard':state.discovered.includes('fields')?'fields':'ridge'}">${k==='scrap'?'Find scrap → Scrap yard':state.discovered.includes('fields')?'Find food → Abandoned fields':'Find food → Scout the ridge'}</button>`).join(''):''}</div>`;
  }).join('')}<div class="detail-footer">TAKE YOUR TIME TO PLAN.<br>THE CLOCK ONLY TICKS WHEN YOU WORK.</div>`;
  $('detail').querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',()=>{if(start(state,b.dataset.action)){paused=false;save();renderAll();}}));
  $('detail').querySelectorAll('[data-supply]').forEach(b=>b.onclick=()=>selectLocation(b.dataset.supply));
@@ -50,7 +51,8 @@ function renderDetail(){
 }
 function renderTask(){
  const slot=$('task-slot');if(!slot)return;
- if(!state.active){slot.innerHTML='<div class="idle-task"><span class="eyebrow">AWAITING ORDERS</span><strong>Every trip outside costs time.</strong><span>Choose a site on the map. The clock is stopped.</span></div>';return;}
+ slot.hidden=!state.active;
+ if(!state.active){slot.innerHTML='';return;}
  const t=state.active;
  if(slot.querySelector('.task-panel')){
   slot.querySelector('.eyebrow').textContent=paused?'WORK PAUSED':'WORK IN PROGRESS';

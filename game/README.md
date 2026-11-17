@@ -38,3 +38,7 @@ the guide. The moving horde front visualizes the countdown.
 
 See [the browser inspiration study](docs/inspiration-study.md) for tested
 reference interactions and the reasoning behind this pass.
+
+Explore the abandoned fields at least once to reveal Briar farm and unlock its
+restoration. The fields remain repeatable; restoring the farm doubles their food
+yield. Older saves retain completed or in-progress farm restoration.

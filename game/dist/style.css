@@ -58,9 +58,6 @@ main{height:calc(100dvh - 51px);min-height:620px;display:grid;grid-template-colu
 #face-wave{grid-column:2;grid-row:1;align-self:center;max-width:110px}
 #face-wave:disabled{opacity:.4}
 #task-slot{grid-column:1/-1;grid-row:2}
-.idle-task{display:flex;align-items:center;gap:12px;border-top:1px solid #514338;padding-top:11px;font:11px var(--mono)}
-.idle-task strong{font-weight:400}
-.idle-task>span:last-child{margin-left:auto;color:var(--muted);font-size:10px}
 .task-panel{display:grid;grid-template-columns:1fr 1fr;gap:7px 15px;border-top:1px solid #514338;padding-top:10px}
 .task-panel .eyebrow{font-size:9px}
 .task-panel h3{grid-column:1;grid-row:2;margin:0;font:14px Georgia,serif}
@@ -134,7 +131,6 @@ dialog li strong{color:var(--text)}
 @media(max-width:1000px){main{grid-template-columns:minmax(0,1fr) 290px}
 .resources{gap:19px}
 .resource-name{font-size:10px}
-.idle-task>span:last-child{display:none}
 .map-coordinates{display:none}
 .map-instruction{font-size:8px;max-width:65%}
 .wave-title{align-items:flex-start}
@@ -216,3 +212,5 @@ main{display:flex;flex-direction:column;height:auto;min-height:0}
 .map-instruction{font-size:7px}
 .journal #next-move{font-size:12px}
 }
+
+#task-slot[hidden]{display:none}
