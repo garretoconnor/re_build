@@ -26,4 +26,15 @@ point) and preserve silhouettes of discovered locations for the next run.
 
 V0 intentionally has a fixed map and one wave, with abstract combat. The relay
 station and reclaimed farm are optional goals. All game artwork is generated
-locally as SVG; optional Google Fonts fall back to system fonts when offline.
+locally as SVG; the interface uses system fonts and works offline once loaded.
+
+## Interface direction
+
+The field map is the main play surface, with supplies above it and the wave clock
+and active task below it. Buttons describe the action, missing supplies link to
+places to find them, and task previews show the time left before the horde.
+Space pauses/resumes work when focus is outside a native control; `?` opens
+the guide. The moving horde front visualizes the countdown.
+
+See [the browser inspiration study](docs/inspiration-study.md) for tested
+reference interactions and the reasoning behind this pass.
