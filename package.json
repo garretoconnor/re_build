@@ -1,0 +1,9 @@
+{
+  "name": "re-build",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node game/server.mjs",
+    "test": "node --test game/tests/*.test.mjs"
+  }
+}
