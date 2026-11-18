@@ -3,6 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "verify:catalog": "node scripts/verify-catalog.mjs",
+    "import:catalog": "node scripts/import-catalog.mjs",
     "dev": "node game/server.mjs",
     "test": "node --test game/tests/*.test.mjs"
   }
