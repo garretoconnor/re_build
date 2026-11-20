@@ -1,6 +1,7 @@
 import {fresh,start,tick,block} from './run.js';
 import type {Action,Catalog,Stats} from './run.js';
 import {structure} from './art.js';
+import {enableMapRotation} from './orbit.js';
 
 // Stable catalog IDs anchor the first valley's diagram. Coordinates are presentation only.
 const positions:Record<string,[number,number,number,string]>={
@@ -39,7 +40,10 @@ async function boot(){
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(!stats.hidden)drawer(false); hide()}});
   document.addEventListener('click',e=>{if(!stats.hidden && !(e.target as Element).closest('#stats,#menu'))drawer(false)});
   function hide(){inspected=null;tip.hidden=true}
+  const viewport=el('viewport');
+  enableMapRotation(viewport,board,el<HTMLButtonElement>('reset-view'),hide);
   function inspect(a:Action){
+    if(viewport.classList.contains('dragging'))return;
     inspected=a;
     const needs=a.prerequisiteIds.map(id=>c.actions.find(t=>t.id===id)!.name).join(', ');
     const fields={
