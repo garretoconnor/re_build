@@ -6,6 +6,7 @@ import { loadCatalog } from './catalog.mjs';
 const assets = new Map(Object.entries({
   '/':['flow/index.html','text/html'], '/style.css':['flow/style.css','text/css'],
   '/app.js':['flow/app.ts','text/javascript'], '/run.js':['flow/run.ts','text/javascript'],
+  '/orbit.js':['flow/orbit.ts','text/javascript'],
   '/art.js':['dist/art.js','text/javascript']
 }));
 createServer(async (req,res) => {
