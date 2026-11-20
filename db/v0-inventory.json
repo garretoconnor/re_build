@@ -1,0 +1,311 @@
+{
+  "source": {
+    "revision": "16190763cf611d2af96178df21843ccbf8a68edf",
+    "path": "game/dist/engine.js",
+    "actionLocator": "actions[slug]",
+    "characterLocator": "fresh()",
+    "rulesLocators": [
+      "WAVE_TIME",
+      "ready()"
+    ]
+  },
+  "statKeys": ["scrap", "food", "people", "defense", "gathering"],
+  "character": {
+    "id": "52e34e96-b233-56c4-b13e-d3396ab30e22",
+    "name": "Noah",
+    "stats": {
+      "scrap": 4,
+      "food": 4,
+      "people": 1,
+      "defense": 0
+    }
+  },
+  "rules": {
+    "id": "3a7dac83-9823-5034-8eca-b97123e901af",
+    "timeBudgetHours": 160,
+    "survivalMinimums": {
+      "defense": 12,
+      "people": 3
+    }
+  },
+  "actions": {
+    "shelter": {
+      "id": "c3330af4-2033-5a5b-bf41-f7f3f7c9b48c",
+      "name": "Restore the outpost",
+      "desc": "Patch the roof. Light the windows. Make a home.",
+      "durationHours": 18,
+      "repsRequired": 1,
+      "repeatable": false,
+      "prerequisiteIds": [],
+      "requiredStats": {},
+      "cost": {
+        "scrap": 6
+      },
+      "bonus": {
+        "defense": 3
+      },
+      "completion": {},
+      "beneficialStats": {},
+      "sourceEvidence": {
+        "node": "camp",
+        "requires": null,
+        "reveals": [],
+        "prerequisiteSlugs": []
+      }
+    },
+    "barricade": {
+      "id": "0e435c1f-10d0-57ce-8f43-fce43628ac0d",
+      "name": "Build barricades",
+      "desc": "Reinforce the perimeter with timber and sheet metal.",
+      "durationHours": 14,
+      "repsRequired": 1,
+      "repeatable": true,
+      "prerequisiteIds": [
+        "c3330af4-2033-5a5b-bf41-f7f3f7c9b48c"
+      ],
+      "requiredStats": {},
+      "cost": {
+        "scrap": 5
+      },
+      "bonus": {
+        "defense": 4
+      },
+      "completion": {},
+      "beneficialStats": {},
+      "sourceEvidence": {
+        "node": "camp",
+        "requires": "shelter",
+        "reveals": [],
+        "prerequisiteSlugs": [
+          "shelter"
+        ]
+      }
+    },
+    "salvage": {
+      "id": "d7e80561-6648-57c6-bfbf-548b43a15faa",
+      "name": "Salvage materials",
+      "desc": "Search the wreckage for useful building materials.",
+      "durationHours": 12,
+      "repsRequired": 1,
+      "repeatable": true,
+      "prerequisiteIds": [],
+      "requiredStats": {},
+      "cost": {},
+      "bonus": {
+        "scrap": 8
+      },
+      "completion": {},
+      "beneficialStats": {},
+      "sourceEvidence": {
+        "node": "yard",
+        "requires": null,
+        "reveals": [],
+        "prerequisiteSlugs": []
+      }
+    },
+    "scout": {
+      "id": "23728d9d-933f-519d-a35b-45b53f44dff7",
+      "name": "Survey the valley",
+      "desc": "Climb the tower and chart three new locations.",
+      "durationHours": 14,
+      "repsRequired": 1,
+      "repeatable": false,
+      "prerequisiteIds": [],
+      "requiredStats": {},
+      "cost": {},
+      "bonus": {},
+      "completion": {},
+      "beneficialStats": {},
+      "sourceEvidence": {
+        "node": "ridge",
+        "requires": null,
+        "reveals": [
+          "fields",
+          "bridge",
+          "depot"
+        ],
+        "prerequisiteSlugs": []
+      }
+    },
+    "harvest": {
+      "id": "fa19c112-0d42-5eb6-b96e-bd4a72f9fe01",
+      "name": "Explore abandoned fields",
+      "desc": "Gather what still grows around the abandoned fields.",
+      "durationHours": 10,
+      "repsRequired": 1,
+      "repeatable": true,
+      "prerequisiteIds": [
+        "23728d9d-933f-519d-a35b-45b53f44dff7"
+      ],
+      "requiredStats": {},
+      "cost": {},
+      "bonus": {
+        "food": 6
+      },
+      "completion": {},
+      "beneficialStats": {
+        "food": [
+          "gathering"
+        ]
+      },
+      "sourceEvidence": {
+        "node": "fields",
+        "requires": null,
+        "reveals": [
+          "farm"
+        ],
+        "prerequisiteSlugs": [
+          "scout"
+        ]
+      }
+    },
+    "cultivate": {
+      "id": "b12b5251-69b4-5108-8d10-d05406a1f9aa",
+      "name": "Restore Briar farm",
+      "desc": "Restore the garden. Exploring the fields yields twice as much food.",
+      "durationHours": 18,
+      "repsRequired": 1,
+      "repeatable": false,
+      "prerequisiteIds": [
+        "fa19c112-0d42-5eb6-b96e-bd4a72f9fe01"
+      ],
+      "requiredStats": {},
+      "cost": {
+        "scrap": 5
+      },
+      "bonus": {
+        "food": 8,
+        "defense": 1
+      },
+      "completion": {
+        "gathering": 6
+      },
+      "beneficialStats": {},
+      "sourceEvidence": {
+        "node": "farm",
+        "requires": "harvest",
+        "reveals": [],
+        "prerequisiteSlugs": [
+          "harvest"
+        ]
+      }
+    },
+    "crossing": {
+      "id": "598fc938-28dc-5949-b079-dab7c8232b87",
+      "name": "Repair the crossing",
+      "desc": "Lay new planks and reveal the far side of the river.",
+      "durationHours": 18,
+      "repsRequired": 1,
+      "repeatable": false,
+      "prerequisiteIds": [
+        "23728d9d-933f-519d-a35b-45b53f44dff7"
+      ],
+      "requiredStats": {},
+      "cost": {
+        "scrap": 6
+      },
+      "bonus": {
+        "defense": 1
+      },
+      "completion": {},
+      "beneficialStats": {},
+      "sourceEvidence": {
+        "node": "bridge",
+        "requires": null,
+        "reveals": [
+          "church",
+          "radio"
+        ],
+        "prerequisiteSlugs": [
+          "scout"
+        ]
+      }
+    },
+    "supplies": {
+      "id": "f4c8d1ba-2c94-5827-8e44-66cd269865c2",
+      "name": "Search the storeroom",
+      "desc": "Pick through the shelves for food and spare parts.",
+      "durationHours": 12,
+      "repsRequired": 1,
+      "repeatable": true,
+      "prerequisiteIds": [
+        "23728d9d-933f-519d-a35b-45b53f44dff7"
+      ],
+      "requiredStats": {},
+      "cost": {},
+      "bonus": {
+        "scrap": 5,
+        "food": 3
+      },
+      "completion": {},
+      "beneficialStats": {},
+      "sourceEvidence": {
+        "node": "depot",
+        "requires": null,
+        "reveals": [],
+        "prerequisiteSlugs": [
+          "scout"
+        ]
+      }
+    },
+    "rescue": {
+      "id": "9b86325c-0e08-5a1c-928a-364c8307ab83",
+      "name": "Welcome the survivors",
+      "desc": "Share your provisions. Two people join your settlement.",
+      "durationHours": 16,
+      "repsRequired": 1,
+      "repeatable": false,
+      "prerequisiteIds": [
+        "598fc938-28dc-5949-b079-dab7c8232b87"
+      ],
+      "requiredStats": {},
+      "cost": {
+        "food": 6
+      },
+      "bonus": {
+        "people": 2,
+        "defense": 3
+      },
+      "completion": {},
+      "beneficialStats": {},
+      "sourceEvidence": {
+        "node": "church",
+        "requires": null,
+        "reveals": [],
+        "prerequisiteSlugs": [
+          "crossing"
+        ]
+      }
+    },
+    "signal": {
+      "id": "0f17a823-dac6-521d-8a99-792bbcbc768c",
+      "name": "Send a signal",
+      "desc": "Restore the relay and call for help. An optional stretch goal.",
+      "durationHours": 20,
+      "repsRequired": 1,
+      "repeatable": false,
+      "prerequisiteIds": [
+        "598fc938-28dc-5949-b079-dab7c8232b87",
+        "9b86325c-0e08-5a1c-928a-364c8307ab83"
+      ],
+      "requiredStats": {},
+      "cost": {
+        "scrap": 8
+      },
+      "bonus": {
+        "defense": 2
+      },
+      "completion": {},
+      "beneficialStats": {},
+      "sourceEvidence": {
+        "node": "radio",
+        "requires": "rescue",
+        "reveals": [],
+        "prerequisiteSlugs": [
+          "crossing",
+          "rescue"
+        ]
+      }
+    }
+  }
+}

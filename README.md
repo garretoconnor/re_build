@@ -20,3 +20,10 @@ Legendum
 The World Is Doomed Unless I Can Raise My Power Level to 1,000,000 and Confront the Demon Lord
 ...
 and many more!
+
+## Play the action network
+
+With Node.js 24 or later, run `npm run dev` in this directory and open
+[the local application](http://127.0.0.1:4173/). The server reads the action catalog
+from SQLite and serves the HTML5 interface from `game/flow`. Each click starts one
+rep. An in-game hour takes 0.4 seconds during work. Refreshing starts a fresh run.
